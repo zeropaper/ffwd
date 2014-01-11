@@ -52,11 +52,11 @@
         templateUrl: 'partials/api-explorer',
         controller: 'ThingTypesCtrl'
       })
-      .when('/api/:thingType', {
+      .when('/api/:thingType/:thingId', {
         templateUrl: 'partials/api-resource',
         controller: 'ThingTypeCtrl'
       })
-      .when('/api/:thingType:/thingId', {
+      .when('/api/:thingType', {
         templateUrl: 'partials/api-resource',
         controller: 'ThingTypeCtrl'
       })
