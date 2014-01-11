@@ -1,0 +1,12 @@
+node_modules
+public
+.tmp
+.sass-cache
+app/bower_components
+heroku
+.credentials.json
+.schema-cache
+fixtures/audio/*
+fixtures/video/*
+fixtures/images/*
+fixtures/image/*

@@ -1,0 +1,44 @@
+<div infinite-scroll='next()' infinite-scroll-disabled='HALThings.busy' infinite-scroll-distance='1'>
+  <section ng-repeat="post in HALThings.items">
+    <header>
+      <h3><a  href="" target="_blank">{{post.tumblr.blog_name}}</a></h3>
+      <span class="published">{{post.datePublished | date:'short'}}</span>
+      <span ng-show="post.tumblr.source_title">| from <a class="source" href="{{post.tumblr.source_url}}">{{post.tumblr.source_title}}</a></span>
+  <!--     <ul class="tags">
+        <li ng-repeat="tag in post.tumblr.tags track by $index"><a href="">tag</a></li>
+      </ul> -->
+
+
+    </header>
+
+    <img ng-show="{{image}}" src="{{image}}" />
+
+    <figure ng-repeat="photo in post.tumblr.photos">
+      <img src="{{photo.original_size.url}}" />
+      <caption ng-bind-html="photo.caption"></caption>
+    </figure>
+    <div></div>
+    {{post.tumblr.player.length}}
+    <div ng-bind-html="post.tumblr.player.pop().embed_code"></div>
+    
+    <div ng-repeat="video in post.videos">
+      <div videogular>
+        <video class='videoPlayer' preload='none'>
+          <!-- <source ng-repeat='media in video' ng-src='{{ media.url }}' type='{{ media.type }}'> -->
+          <source ng-src='{{video.url}}' />
+        </video>
+      </div>
+      <a ng-href="{{video.url}}">Download</a>
+    </div>
+<!-- 
+    <div>
+    </div> -->
+
+    <p ng-bind-html="post.tumblr.caption"></p>
+
+    <footer>
+
+    </footer>
+  </section>
+  <div ng-show='HALThings.busy'>Loading data...</div>
+</div>

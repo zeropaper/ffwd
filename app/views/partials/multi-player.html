@@ -1,0 +1,34 @@
+<div class="multi-meta">
+  <ul class="controls">
+    <li ng-click="prev()">&laquo;</li>
+    <li ng-hide="playing" ng-click="play()">Play</li>
+    <li ng-show="playing" ng-click="pause()">Pause</li>
+    <li ng-click="next()">&raquo;</li>
+  </ul>
+
+  <ul class="info">
+    <li>#: {{index}}</li>
+    <li>Media type: {{media.type}}</li>
+    <li>Provider: {{media.provider}}</li>
+    <li>Provider ID: {{media.provider_id}}</li>
+  </ul>
+</div>
+
+<div class="screen-holder" ng-show="media.type === 'video'">
+  <iframe
+    class="screen"
+    src="{{src}}"
+    width="550"
+    height="300"
+    frameborder="0"
+    scrolling="no"
+    allowfullscreen
+    name="yp_embed_video">
+  </iframe>
+</div>
+
+<div class="screen-holder" ng-show="media.type === 'image'">
+  <img
+    class="screen"
+    src="{{src}}" />
+</div>

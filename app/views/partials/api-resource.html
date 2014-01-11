@@ -1,0 +1,81 @@
+<section>
+  <header>
+    <h3>Definition of the "<span class="class-name">{{thingType}}</span>" resource</h3>
+
+  </header>
+
+
+  <div>
+    <form name="thingSearchForm">
+      <input type="text" ng-model="editId" placeholder="ID of a {{thingType}}" list="resource-ids" ng-change="fillEditForm()"/>
+      <datalist id="resource-ids">
+        <option ng-repeat="model in things[thingType].items" value="{{model._id}}">{{(model.name ? model.name +' ' : '')}}{{model._id}}</option>
+      </datalist>
+    </form>
+
+    <form name="thingCreateForm" class="row">
+      <div class="column half fields">
+        <input type="text" ng-model="thingDocumentProperty" list="resource-properties" ng-change="editSearchProperty()" />
+        <datalist id="resource-properties">
+          <option ng-repeat="(path, def) in definition.paths" value="{{path}}">{{(def.label ? def.label : path)}}</option>
+        </datalist>
+
+        <!-- <div ng-repeat="(path, value) in thingDocument" class="field {{path}}" ng-show="path[0] !== '_'">
+          <label for="scope-{{$id}}">{{(definition.paths[path].label ? definition.paths[path].label : path)}}:</label>
+          <input id="scope-{{$id}}" type="text" name="{{path}}" ng-model="thingDocument[path]"/>
+        </div> -->
+        <div
+          class="field {{path}}"
+          ng-repeat="(path, value) in thingDocument"
+          ng-show="path[0] !== '_'"
+          >
+          <label>{{definition[path] ? definition[path].lanel : path}}</label>
+          <div
+            schema-property-field
+            data-name="{{path}}"
+            data-definition="definition[path]"
+            ></div>
+        </div>
+      </div>
+      
+      <div class="column half document">
+        <div ng-repeat="(path, def) in definition.paths" class="field {{path}}" ng-show="path[0] !== '_' && thingDocument[path]">
+          <label>{{(def.label ? def.label : path)}}:</label> {{thingDocument[path]}}
+        </div>
+      </div>
+
+      <div class="column full actions">
+        <input type="button" value="Cancel" ng-click="cancel()" />
+        <input type="submit" value="Submit" ng-click="submit()"/>
+      </div>
+    </form>
+    
+    <div class="row">
+      <ul class="paths column half">
+        <li ng-repeat="(path, def) in definition.paths">
+          <div class="path">
+            <a href="/api/{{thingType}}/{{path}}">{{path}}</a>
+            <span class="ranges">
+              <span ng-repeat="range in def.ranges">{{range}}{{($last ? '' : ', ')}}</span>
+            </span>
+          </div>
+
+          <div class="comment" ng-bind-html="def.comment"></div>
+        </li>
+      </ul>
+
+      <ul class="column half">
+        <li ng-repeat="item in things[thingType].items">
+          <h4>{{(item.name || 'no name')}}</h4>
+          <img ng-show="item.image" src="{{item.image}}" alt="Image of {{(item.name || 'the post.')}}" />
+          <div ng-show="item.description" class="description">{{item.description}}</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+
+  <footer>
+
+  </footer>
+</section>

@@ -1,0 +1,3 @@
+<ul>
+  <li ng-repeat="(name, def) in definition"><a href="/api/{{name}}">{{name}}{{(def.count ? ' | '+ def.count : '')}}</a></li>
+</ul>
