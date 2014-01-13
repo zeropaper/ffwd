@@ -6,7 +6,6 @@ var mongoose = schemaOrg.mongoose;
 var Schema = mongoose.Schema;
 
 describe('The database layer', function() {
-
   before(function(done) {
     mongoose.connect('mongodb://localhost/test-relations', {
       db: { safe: true }
@@ -24,7 +23,7 @@ describe('The database layer', function() {
   describe('The things schema', function() {
     it('produces a mongoose schema instance', function(done) {
       this.timeout(5000);
-      schemaOrg('Thing', {}, done);
+      schemaOrg('Place', {}, done);
     });
 
     it('is defined', function(done) {
@@ -32,9 +31,9 @@ describe('The database layer', function() {
       done();
     });
 
-    it('defines the Thing Model', function(done) {
+    it('defines the Place Model', function(done) {
       assert.doesNotThrow(function() {
-        mongoose.model('Thing');
+        mongoose.model('Place');
         done();
       }, function() {
         done();

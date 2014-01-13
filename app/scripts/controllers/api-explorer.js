@@ -5,15 +5,9 @@ angular.module('fullstackApp')
     '$scope',
     '$http',
     function ($scope, $http) {
-      console.info('API explorer', $scope);
-  
       $http.get('/api/v1/definition')
       .success(function(data) {
-        console.info('success callback', data);
         $scope.definition = data._embedded;
-      })
-      .error(function(err) {
-        console.info('error callback', err);
       });
     }
   ])
@@ -35,7 +29,6 @@ angular.module('fullstackApp')
             // $scope.thingDocument = items[i];
             // i = items.length;
             var newPath = '/api/'+ $scope.thingType +'/'+ $scope.editId;
-            console.info('redirect to', newPath);
             $location.path(newPath);
             return;
           }
@@ -51,20 +44,16 @@ angular.module('fullstackApp')
       };
   
       $scope.submit = function() {
-        console.info('submit', !!$scope.thingDocument._id);
-  
         if ($scope.thingDocument._id) {
           $scope.things[$scope.thingType]
           .put($scope.thingDocument)
           .success(function() {
-            console.info('putttted!!!!');
           });
         }
         else {
           $scope.things[$scope.thingType]
           .post($scope.thingDocument)
           .success(function() {
-            console.info('posted!!!!');
             $scope.things[$scope.thingType].list();
           });
         }
@@ -85,7 +74,6 @@ angular.module('fullstackApp')
         .success(function(definition) {
           $scope.definition = definition;
           $scope.things[$scope.thingType].list().success(function(){
-            console.info('$routeParams.thingId', $routeParams.thingId);
             if ($routeParams.thingId) {
               var items = $scope.things[$scope.thingType].items;
               for (var i = 0; i < items.length - 1; i++) {

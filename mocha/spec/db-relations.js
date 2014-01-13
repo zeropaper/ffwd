@@ -1,25 +1,23 @@
 var path = require('path');
 var assert = require('assert');
+var expect = require('expect.js');
+var utils = require('./../utils');
 var libDir = './../../lib';
 var schemaOrg = require(libDir +'/db/schema');
 var mongoose = schemaOrg.mongoose;
 var Schema = mongoose.Schema;
 
-// mongoose.connect('mongodb://localhost/test-schema', { db: { safe: true } }, function() {});
-
 for (var r in require.cache) {
-  // console.info('require.cache', r, r.split('goose').length > 1, r.split('fullstack/lib').length > 1);
   if (r.split('goose').length > 1 || r.split('fullstack/lib').length > 1) {
-    // console.info('----------------clearing', r);
     delete require.cache[r];
   }
 }
 
 schemaOrg = require(libDir +'/db/schema');
-// mongoose = require('mongoose');
+
 mongoose = schemaOrg.mongoose;
-Schema = mongoose.Schema;
 supergoose = schemaOrg.supergoose;
+Schema = mongoose.Schema;
 
 describe('The relationships management', function() {
   var TestHolder, testHolderA, testHolderB,
@@ -34,45 +32,12 @@ describe('The relationships management', function() {
     mongoose.disconnect(done);
   });
 
-
   it('defines mongoose.model', function(done) {
-    schemaOrg.registerSchema('TestHolder', {
-      properties: {
-        name: 'String',
-        single: 'TestHolded',
-        multiple: ['TestHolded']
-      }
-    });
+    this.timeout(10000);
 
-    schemaOrg.registerSchema('TestHolded', {
-      properties: {
-        name: 'String',
+    schemaOrg.registerSchema('TestHolder', utils.schemas.TestHolder);
 
-        boolean: 'Boolean',
-        date: 'Date',
-        time: 'DateTime',
-        mixed: 'Mixed',
-        integer: 'Integer',
-        number: 'Number',
-        float: 'Float',
-        text: 'Text',
-        string: 'String',
-        url: 'URL',
-        objectId: 'ObjectId',
-
-        booleanArray: ['Boolean'],
-        dateArray: ['Date'],
-        timeArray: ['DateTime'],
-        mixedArray: ['Mixed'],
-        integerArray: ['Integer'],
-        numberArray: ['Number'],
-        floatArray: ['Float'],
-        textArray: ['Text'],
-        stringArray: ['String'],
-        urlArray: ['URL'],
-        objectIdArray: ['ObjectId']
-      }
-    });
+    schemaOrg.registerSchema('TestHolded', utils.schemas.TestHolded);
 
     schemaOrg(['TestHolded', 'TestHolder'], {}, done);
   });

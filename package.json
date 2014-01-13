@@ -1,6 +1,7 @@
 {
-  "name": "fullstack",
+  "name": "ffwd",
   "version": "0.0.0",
+  "description": "Fast Forward, a stack made of mongoose, express.js, passport.js and angular.js with resource definitions based on schema.org.",
   "dependencies": {
     "express": "~3.4.3",
     "async": "~0.2.9",
@@ -46,7 +47,8 @@
     "grunt-open": "~0.2.0",
     "connect-livereload": "~0.3.0",
     "grunt-mocha": "~0.4.7",
-    "supertest": "~0.8.2"
+    "supertest": "~0.8.2",
+    "expect.js": "~0.2.0"
   },
   "engines": {
     "node": ">=0.8.0"

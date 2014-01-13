@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.class {
+  font-weight: 700;
+}
+
+/* a comment */
+@media screen {
+  [attribute] {
+    text-transform: uppercase;
+  }
+}
