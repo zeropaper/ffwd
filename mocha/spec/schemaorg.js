@@ -4,6 +4,9 @@ var schemaOrg = require('./../../lib/db/schema');
 var mongoose = schemaOrg.mongoose;
 
 describe('The schemaOrg API', function() {
+    function expectSchemaDefinition(schema) {
+      expect(schema).to.be.a('object');
+    }
   before(function(done) {
     mongoose.connect('mongodb://localhost/test-schemaorg', {
       db: { safe: true }
@@ -13,10 +16,7 @@ describe('The schemaOrg API', function() {
     mongoose.disconnect(done);
   });
 
-  xdescribe('The base definition', function() {
-    function expectSchemaDefinition(schema) {
-      expect(schema).to.be.a('object');
-    }
+  describe('The base definition', function() {
 
     it('has a property schemaCachePath', function(done) {
       expect(schemaOrg.schemaCachePath).to.be.ok();
@@ -64,7 +64,7 @@ describe('The schemaOrg API', function() {
         if (err) {
           return done(err);
         }
-        console.info('schema', schema);
+        expect(schema).to.be.a('array');
         // expectSchemaDefinition(schema);
         done();
       });
@@ -76,9 +76,9 @@ describe('The schemaOrg API', function() {
       it('registers the custom Model for Ancestored', function(done) {
         schemaOrg.registerSchema('Ancestored', utils.schemas.Ancestored);
         expect(function() {
-          schemaOrg.mongoose.model('Ancestored');
-        }).not.to.throwError();
-        done();
+          schemaOrg.get('Ancestored');
+          done();
+        }).not.to.throwError(done);
       });
 
       it('creates a mongoose custom Model for Ancestored', function(done) {
@@ -93,7 +93,7 @@ describe('The schemaOrg API', function() {
     });
 
     describe('A custom Model with relations', function() {
-      it('registers the custom Model for TestHolder and TestHolded', function(done) {
+      it('registers the custom Model for TestHolder', function(done) {
         schemaOrg.registerSchema('TestHolder', utils.schemas.TestHolder);
         expect(function() {
           schemaOrg.mongoose.model('TestHolder');
