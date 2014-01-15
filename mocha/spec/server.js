@@ -78,107 +78,107 @@ describe('GET /api/v1/definition', function(){
       ;
   });
 
-  // describe('has a _PassportUser', function() {});
-});
-
-describe('GET /api/definition', function() {
-  it('responds with a HTML page', function(done) {
-    request(app)
-      .get('/api/definition')
-      .expect('Content-type', 'text/html; charset=utf-8', done)
-    ;  
-  });
-});
-
-xdescribe('TestHolder resource', function() {
-  it('has a json definition of the TestHolder resource', function(done){
-    request(app)
-      .get('/api/v1/definition/TestHolder')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function(err, res){
-        assert.ok(typeof res.body.count !== 'undefined');
-        assert.equal(res.body.paths.name, 'String');
-        assert.equal(res.body.paths.single, 'TestHolded');
-        assert.equal(res.body.paths.multiple.constructor.name, 'Array');
-        done(err);
-      })
-    ;
+  describe('GET /api/definition', function() {
+    it('responds with a HTML page', function(done) {
+      request(app)
+        .get('/api/definition')
+        .expect('Content-type', 'text/html; charset=utf-8', done)
+      ;  
+    });
   });
 
-  it('creates a TestHolder document and returns it', function(done) {
-    var modelName = 'API Holder A';
-    request(app)
-      .post('/api/v1/TestHolder')
-      .send({name: modelName})
-      .expect(201)
-      .end(function(err, res) {
-        if (err) {
-          return done(err);
-        }
-
-        assert.ok(res.body._links);
-        assert.ok(res.body._links.self);
-        assert.ok(res.body._links.self.href);
-        assert.equal(res.body.name, modelName);
-        done();
-      })
-    ;
-  });
-
-  describe('The automatic creation of referenced objects', function() {
-    var modelName = 'An other Holder';
-    var req, reqErr, response;
-    before(function(done) {
-      req = request(app)
-        .post('/api/v1/TestHolder')
-        .send({
-          name: modelName,
-          single: {
-            boolean: false,
-            integer: 1
-          },
-          multiple: [
-            {
-              boolean: true,
-              integer: 1
-            },
-            {
-              boolean: true,
-              integer: 2
-            }
-          ]
+  describe('TestHolder resource', function() {
+    it('has a json definition of the TestHolder resource', function(done){
+      request(app)
+        .get('/api/v1/definition/TestHolder')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res){
+          assert.ok(typeof res.body.count !== 'undefined');
+          assert.equal(res.body.paths.name, 'String');
+          assert.equal(res.body.paths.single, 'TestHolded');
+          assert.equal(res.body.paths.multiple.constructor.name, 'Array');
+          done(err);
         })
-        // .expect(201)
-        .end(function(err, res) {
-          reqErr = err;
-          response = res;
-          done();
-        });
       ;
     });
 
-    it('responds without error', function(done) {
-      done(reqErr);
+    it('creates a TestHolder document and returns it', function(done) {
+      var modelName = 'API Holder A';
+      request(app)
+        .post('/api/v1/TestHolder')
+        .send({name: modelName})
+        .expect(201)
+        .end(function(err, res) {
+          if (err) {
+            return done(err);
+          }
+
+          assert.ok(res.body._links);
+          assert.ok(res.body._links.self);
+          assert.ok(res.body._links.self.href);
+          assert.equal(res.body.name, modelName);
+          done();
+        })
+      ;
     });
 
-    it('responds with status code 201', function(done) {
-      assert.equal(response.status, 201);
-      done();
-    });
+    describe('The automatic creation of referenced objects', function() {
+      var modelName = 'An other Holder';
+      var req, reqErr, response;
+      before(function(done) {
+        req = request(app)
+          .post('/api/v1/TestHolder')
+          .send({
+            name: modelName,
+            single: {
+              boolean: false,
+              integer: 1
+            },
+            multiple: [
+              {
+                boolean: true,
+                integer: 1
+              },
+              {
+                boolean: true,
+                integer: 2
+              }
+            ]
+          })
+          // .expect(201)
+          .end(function(err, res) {
+            reqErr = err;
+            response = res;
+            done();
+          });
+        ;
+      });
 
-    it('responds with an object having the same name', function(done) {
-      assert.equal(response.body.name, modelName);
-      done();
-    });
+      it('responds without error', function(done) {
+        done(reqErr);
+      });
 
-    it('replaced values with object ids when possible', function(done) {
-      assert.equal(typeof response.body.single, 'string');
-      assert.equal(response.body.multiple.constructor.name, 'Array');
-      assert.equal(response.body.multiple.length, 2);
-      assert.equal(typeof response.body.multiple[0], 'string');
-      done();
+      it('responds with status code 201', function(done) {
+        assert.equal(response.status, 201);
+        done();
+      });
+
+      it('responds with an object having the same name', function(done) {
+        assert.equal(response.body.name, modelName);
+        done();
+      });
+
+      it('replaced values with object ids when possible', function(done) {
+        assert.equal(typeof response.body.single, 'string');
+        assert.equal(response.body.multiple.constructor.name, 'Array');
+        assert.equal(response.body.multiple.length, 2);
+        assert.equal(typeof response.body.multiple[0], 'string');
+        done();
+      });
     });
   });
+
+  // describe('has a _PassportUser', function() {});
 });
