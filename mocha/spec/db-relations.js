@@ -1,4 +1,5 @@
 var path = require('path');
+var async = require('async');
 var assert = require('assert');
 var expect = require('expect.js');
 var utils = require('./../utils');
@@ -23,10 +24,18 @@ describe('The relationships management', function() {
   var TestHolder, testHolderA, testHolderB,
       TestHolded, testHolded1, testHolded2, testHolded3;
 
+
   before(function(done) {
-    mongoose.connect('mongodb://localhost/test-relations', {
-      db: { safe: true }
-    }, done);
+    async.series([
+      function(cb) {
+        mongoose.connect('mongodb://localhost/test-relations', {
+          db: { safe: true }
+        }, cb);
+      },
+      function(cb) {
+        utils.clearSchemas(mongoose, cb);
+      }
+    ], done);
   });
   after(function(done) {
     mongoose.disconnect(done);
@@ -57,23 +66,21 @@ describe('The relationships management', function() {
 
   it('defines the Holded Model paths', function(done) {
     TestHolded = mongoose.model('TestHolded');
-    var json = schemaOrg.get('TestHolded');
-    // console.info('paths', mongoose.models.TestHolded.schema.paths, json, schemaOrg.mapTypes(json));
-    assert.ok(mongoose.models.TestHolded);
-    var paths = mongoose.models.TestHolded.schema.paths;
-    assert.ok(paths.name);
-    assert.equal(paths.name.instance, 'String');
-    assert.equal(paths.boolean.options.type, Boolean);
-    assert.equal(paths.date.options.type, Date);
-    assert.equal(paths.time.options.type, Date);
-    assert.equal(paths.mixed.options.type, Schema.Types.Mixed);
-    assert.equal(paths.integer.instance, 'Number');
-    assert.equal(paths.number.instance, 'Number');
-    assert.equal(paths.float.instance, 'Number');
-    assert.equal(paths.text.instance, 'String');
-    assert.equal(paths.string.instance, 'String');
-    assert.equal(paths.url.instance, 'String');
-    assert.equal(paths.objectId.instance, 'ObjectID');
+    var paths = TestHolded.schema.paths;
+    expect(mongoose.models.TestHolded).to.be.ok();
+    expect(paths.name).to.be.ok();
+    expect(paths.name.instance).to.be('String');
+    expect(paths.boolean.options.type).to.be(Boolean);
+    expect(paths.date.options.type).to.be(Date);
+    expect(paths.time.options.type).to.be(Date);
+    expect(paths.mixed.options.type).to.be(Schema.Types.Mixed);
+    expect(paths.integer.instance).to.be('Number');
+    expect(paths.number.instance).to.be('Number');
+    expect(paths.float.instance).to.be('Number');
+    expect(paths.text.instance).to.be('String');
+    expect(paths.string.instance).to.be('String');
+    expect(paths.url.instance).to.be('String');
+    expect(paths.objectId.instance).to.be('ObjectID');
     done();
   });
 
@@ -120,12 +127,10 @@ describe('The relationships management', function() {
       });
       testHolded1.save(function(err, res) {
         if (err) {
-          return done(err);
+          throw err;
         }
 
-        if (res.name !== 'Holded 1') {
-          return done(new Error('Name is not matching'));
-        }
+        assert.equal(res.name, 'Holded 1');
         done();
       });
     }, done);
@@ -268,12 +273,17 @@ describe('The relationships management', function() {
         {name: 'auto ref multiple b'}
       ]
     }, function(err, result) {
-      assert.ok(result.single);
-      assert.equal(result.name, 'A name');
-      assert.ok(result.single);
-      assert.ok(result.multiple);
-      assert.equal(result.multiple.length, 2);
-      done(err);
+      if (err) {
+        return done(err);
+      }
+      var json = JSON.parse(JSON.stringify(result));
+      expect(json.name).to.be('A name');
+      expect(json.single).to.be.a('string');
+      expect(json.multiple).to.be.an('array');
+      expect(json.multiple.length).to.be(2);
+      expect(json.multiple[0]).to.be.a('string');
+      expect(json.multiple[1]).to.be.a('string');
+      done();
     });
   });
 });

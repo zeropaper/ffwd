@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var module = angular.module('halthings', []);
+  var module = angular.module('ffwd.factories', []);
   // var _cache = {};
 
   module.factory('HALThings', function($http) {

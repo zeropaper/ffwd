@@ -129,6 +129,10 @@ module.exports = function (grunt) {
       server: '.tmp'
     },
 
+    bower: {
+      project: {}
+    },
+
     // Add vendor prefixed styles
     autoprefixer: {
       options: {

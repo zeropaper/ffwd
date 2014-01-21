@@ -28,7 +28,7 @@
     'publicPropertyFilter',
     'multiPlayer',
     'schema',
-    'halthings',
+    'ffwd.factories',
     'ngCookies',
     'ngResource',
     'ngSanitize',

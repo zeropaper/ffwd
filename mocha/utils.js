@@ -38,6 +38,20 @@ utils.schemas = {
       multiple: ['TestHolded']
     }
   },
+  
+  TestComplexHolder: {
+    properties: {
+      name: 'Text',
+      first: {
+        name: 'Text',
+        reference: 'TestHolded'
+      },
+      multiple: {
+        title: 'Text',
+        references: ['TestHolder']
+      }
+    }
+  },
 
   Ancestored: {
     ancestors:['Person'],
@@ -45,9 +59,55 @@ utils.schemas = {
       custom: 'Mixed'
     }
   }
-}
+};
+
+utils.clearSchemas = function(mongoose, done) {
+  var ok = true;
+  var cb = function(err) {
+    if (err) {
+      ok = false;
+      if (done) {
+        done(err);
+      }
+    }
+  };
+
+  for (var model in mongoose.models) {
+    if (ok) {
+      mongoose.model(model).find({}).remove(cb);
+    }
+  }
+
+  if (ok && done) {
+    done();
+  }
+};
 
 utils.request = require('supertest');
+
+// utils.connect = function(url, options) {
+//   return function (done) {
+//     function connect(cb) {
+//       mongoose.connect(url, options || {
+//         db: { safe: true }
+//       }, cb);
+//     }
+
+//     mongoose = require('../lib/db/schema').mongoose;
+    
+//     if (mongoose.connection) {
+//       mongoose.disconnect(function(err) {
+//         if (err) {
+//           return done(err);
+//         }
+//         connect(done);
+//       });
+//     }
+//     else {
+//       connect(done);
+//     }
+//   };
+// }
 
 utils.beforeApp = function(app) {
   return function(done) {

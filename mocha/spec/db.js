@@ -1,15 +1,24 @@
 var path = require('path');
+var async = require('async');
 var assert = require('assert');
 var libDir = './../../lib';
+var utils = require('./../utils');
 var schemaOrg = require(libDir +'/db/schema');
 var mongoose = schemaOrg.mongoose;
 var Schema = mongoose.Schema;
 
 describe('The database layer', function() {
   before(function(done) {
-    mongoose.connect('mongodb://localhost/test-relations', {
-      db: { safe: true }
-    }, done);
+    async.series([
+      function(cb) {
+        mongoose.connect('mongodb://localhost/test-relations', {
+          db: { safe: true }
+        }, cb);
+      },
+      function(cb) {
+        utils.clearSchemas(mongoose, cb);
+      }
+    ], done);
   });
   after(function(done) {
     mongoose.disconnect(done);
