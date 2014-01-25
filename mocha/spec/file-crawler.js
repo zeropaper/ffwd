@@ -17,7 +17,7 @@ var app = require('./../../lib/server')({
   supergoose: schemaOrg.supergoose
 });
 
-xdescribe('the file crawler', function() {
+describe('the file crawler', function() {
   describe('initialization', function() {
     it('initializes', function(done) {
       assert.doesNotThrow(function() {

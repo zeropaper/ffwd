@@ -55,6 +55,20 @@ module.exports = function (grunt) {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'karma']
       },
+      serverJsDoc: {
+        files: [
+          'lib/**/*.js',
+          './README.md'
+        ],
+        tasks: ['jsdoc:server']
+      },
+      clientJsDoc: {
+        files: [
+          '<%= yeoman.app %>/scripts/**/*.js',
+          '<%= yeoman.app %>/README.md'
+        ],
+        tasks: ['jsdoc:client']
+      },
       livereload: {
         files: [
           '<%= yeoman.app %>/<%= yeoman.views %>/{,*//*}*.{html,jade}',
@@ -353,6 +367,33 @@ module.exports = function (grunt) {
       unit: {
         configFile: 'karma.conf.js',
         singleRun: true
+      }
+    },
+
+    jsdoc: {
+      options: {
+        // configure: 'jsdoc.conf.json',
+        private: true,
+        recurse: true
+      },
+      // files: [],
+      server: {
+        src: [
+          'lib',
+          'README.md'
+        ],
+        options: {
+          destination: 'doc/server'
+        }
+      },
+      client: {
+        src: [
+          '<%= yeoman.app %>/scripts',
+          '<%= yeoman.app %>/README.md'
+        ],
+        options: {
+          destination: 'doc/client'
+        }
       }
     }
   });

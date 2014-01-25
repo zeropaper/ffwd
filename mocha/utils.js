@@ -46,7 +46,7 @@ utils.schemas = {
         name: 'Text',
         reference: 'TestHolded'
       },
-      multiple: {
+      second: {
         title: 'Text',
         references: ['TestHolder']
       }

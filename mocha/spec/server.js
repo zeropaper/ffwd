@@ -1,7 +1,10 @@
 var path = require('path');
 var assert = require('assert');
+var async = require('async');
 var request = require('supertest');
+var expect = require('expect.js');
 var schemaOrg = require('./../../lib/db/schema');
+var testUtils = require('./../utils');
 var mongoose = schemaOrg.mongoose;
 var app = require('./../../lib/server')({
 }, {
@@ -20,9 +23,34 @@ describe('the server application', function() {
 
 describe('GET /api/v1/definition', function(){
   before(function(done) {
-    mongoose.connect('mongodb://localhost/test-server', {
-      db: { safe: true }
-    }, done);
+    async.series([
+      function(cb){
+        mongoose.connect('mongodb://localhost/test-server', {
+          db: { safe: true }
+        }, cb);
+      },
+      
+      function(cb){
+        schemaOrg('TestHolded', {definition: testUtils.schemas.TestHolded}, cb);
+      },
+      function(cb){
+        mongoose.model('TestHolded').find({}).remove(cb);
+      },
+      
+      function(cb){
+        schemaOrg('TestHolder', {definition: testUtils.schemas.TestHolder}, cb);
+      },
+      function(cb){
+        mongoose.model('TestHolder').find({}).remove(cb);
+      },
+
+      function(cb){
+        schemaOrg('TestComplexHolder', {definition: testUtils.schemas.TestHolder}, cb);
+      },
+      function(cb){
+        mongoose.model('TestComplexHolder').find({}).remove(cb);
+      }
+    ], done);
   });
 
   after(function(done) {
@@ -95,11 +123,15 @@ describe('GET /api/v1/definition', function(){
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res){
-          assert.ok(typeof res.body.count !== 'undefined');
-          assert.equal(res.body.paths.name, 'String');
-          assert.equal(res.body.paths.single, 'TestHolded');
-          assert.equal(res.body.paths.multiple.constructor.name, 'Array');
-          done(err);
+          if (err) {
+            return done(err);
+          }
+          
+          expect(res.body.count).to.be.a('number');
+          expect(res.body.paths.name).to.be('String');
+          expect(res.body.paths.single).to.be('TestHolded');
+          expect(res.body.paths.multiple).to.be.an('array');
+          done();
         })
       ;
     });
@@ -115,10 +147,11 @@ describe('GET /api/v1/definition', function(){
             return done(err);
           }
 
-          assert.ok(res.body._links);
-          assert.ok(res.body._links.self);
-          assert.ok(res.body._links.self.href);
-          assert.equal(res.body.name, modelName);
+          expect(res.body._links).to.be.an('object');
+          expect(res.body._links.self).to.be.an('object');
+          expect(res.body._links.self.href).to.be.a('string');
+          expect(res.body.name).to.be.a('string');
+          expect(res.body.name).to.be(modelName);
           done();
         })
       ;

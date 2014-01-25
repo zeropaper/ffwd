@@ -54,7 +54,6 @@ describe('The relationships management', function() {
   it('defines the Holder Model paths', function(done) {
     TestHolder = mongoose.model('TestHolder');
     var json = schemaOrg.get('TestHolder');
-    // console.info('mongoose.models.TestHolder.schema.paths.single.options', mongoose.models.TestHolder.schema.paths.single.options, json, schemaOrg.mapTypes(json));
     assert.ok(mongoose.models.TestHolder);
     assert.equal(typeof mongoose.models.TestHolder.saveRefs, 'function');
     var paths = mongoose.models.TestHolder.schema.paths;
@@ -207,7 +206,6 @@ describe('The relationships management', function() {
       if (err || !doc) {
         return done(err || (new Error('Could not find document '+testHolderB._id)));
       }
-      // console.info('loaded document', doc);
       if (doc.name !== 'Holder B') {
         return done(new Error('Name is not matching'));
       }
@@ -235,11 +233,14 @@ describe('The relationships management', function() {
         .findById(testHolderB._id)
         .populate('multiple')
         .exec(function(err, doc) {
+          if (err) {
+            return done(err);
+          }
           // console.info('loading multiple', doc, err ? err.stack : null);
           assert.ok(doc.name);
           assert.equal(doc.populated('multiple').length, 2);
           assert.equal(doc.multiple.length, 2);
-          done(err);
+          done();
         });
     });
   });
@@ -277,6 +278,7 @@ describe('The relationships management', function() {
         return done(err);
       }
       var json = JSON.parse(JSON.stringify(result));
+      // console.info('json???', result, json);
       expect(json.name).to.be('A name');
       expect(json.single).to.be.a('string');
       expect(json.multiple).to.be.an('array');

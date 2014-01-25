@@ -1,33 +1,12 @@
+'use strict';
+/* global describe:false, it:false, before:false, after:false */
+
 var utils = require('../../lib/db/utils');
 var fs = require('fs');
 var path = require('path');
 var expect = require('expect.js');
 
 describe('The utilities', function() {
-  describe('atPath()', function() {
-    it('access variable using a path', function(done) {
-      expect(utils.atPath({
-        first: {
-          second: 'ok'
-        }
-      }, 'first.second')).to.be('ok');
-      done();
-    });
-
-    it('supports array using key.1.key', function(done) {
-      expect(utils.atPath({
-        first: [{val: 'ok'}]
-      }, 'first.0.val')).to.be('ok');
-      done();
-    });
-
-    it('throw an error when the path does not exists', function(done) {
-      expect(function() {
-        utils.atPath({}, 'not.existing');
-      }).to.throwError();
-      done();
-    });
-  });
 
   describe('fetchOrRead()', function() {
     var definition;
@@ -55,6 +34,35 @@ describe('The utilities', function() {
       expect(definition).to.be.an('object');
       expect(definition.types).to.be.an('object');
       expect(definition.types.Thing).to.be.an('object');
+      done();
+    });
+  });
+  
+  describe('atPath()', function() {
+    it('access variable using a path', function(done) {
+      var val;
+      expect(function() {
+        val = utils.atPath({
+          first: {
+            second: 'ok'
+          }
+        }, 'first.second');
+      }).not.to.throwError();
+      expect(val).to.be('ok');
+      done();
+    });
+
+    it('supports array using key.1.key', function(done) {
+      expect(utils.atPath({
+        first: [{val: 'ok'}]
+      }, 'first.0.val')).to.equal('ok');
+      done();
+    });
+
+    it('throw an error when the path does not exists', function(done) {
+      expect(function() {
+        utils.atPath({}, 'not.existing');
+      }).to.throwError();
       done();
     });
   });

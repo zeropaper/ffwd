@@ -1,3 +1,6 @@
+'use strict';
+/* global describe:false, it:false, before:false, after:false */
+
 var async = require('async');
 var expect = require('expect.js');
 var utils = require('./../utils');
@@ -48,7 +51,7 @@ describe('The schemaOrg API', function() {
       done();
     });
 
-    it('creates a mongoose Model for Thing', function(done) {
+    it('creates Thing', function(done) {
       schemaOrg('Thing', {}, function(err, schema) {
         if (err) {
           return done(err);
@@ -58,7 +61,7 @@ describe('The schemaOrg API', function() {
       });
     });
 
-    it('creates a mongoose Model for Event', function(done) {
+    it('creates Event', function(done) {
       schemaOrg('Event', {}, function(err, schema) {
         if (err) {
           return done(err);
@@ -68,7 +71,7 @@ describe('The schemaOrg API', function() {
       });
     });
 
-    it('creates mongoose Models for Person and Place', function(done) {
+    it('creates Person and Place', function(done) {
       schemaOrg(['Person', 'Place'], {}, function(err, schema) {
         if (err) {
           return done(err);
@@ -149,7 +152,7 @@ describe('The schemaOrg API', function() {
         }
       });
 
-      it('creates a Models for TestHolder and TestHolded', function(done) {
+      it('creates TestHolder and TestHolded', function(done) {
         schemaOrg(['TestHolded', 'TestHolder'], {}, function(err, schema) {
           if (err) {
             return done(err);
@@ -159,10 +162,14 @@ describe('The schemaOrg API', function() {
         });
       });
 
-
+      it('saves a TestHolder with TestHolded documents', function(done) {
+        mongoose.model('TestHolder').saveRefs({
+          name: 'A TestHolder'
+        }, {}, done);
+      });
     });
 
-    xdescribe('A custom complex Model', function() {
+    describe('A custom complex Model', function() {
       it('registers TestComplexHolder', function(done) {
         schemaOrg.registerSchema('TestComplexHolder', utils.schemas.TestComplexHolder);
         expect(function() {
@@ -204,15 +211,20 @@ describe('The schemaOrg API', function() {
           if (err) {
             return done(err);
           }
-
+console.info('saved', saved);
           expect(saved.name).to.be('Name');
 
+          // console.info('typeof saved.first.reference', typeof saved.first.reference, saved.first.reference.constructor.name);
           expect(saved.first).to.be.an('object');
-          expect(saved.first.reference).to.be.a('string');
+          expect(saved.first.name).to.be.a('string');
+          expect(saved.first.reference.constructor.name).to.be('ObjectID');
+          expect(saved.first.reference.toString).to.be.a('function');
+          expect(saved.first.reference.toString()).to.be.ok();
 
           expect(saved.second).to.be.an('object');
+          expect(saved.second.title).to.be.a('string');
           expect(saved.second.references).to.be.an('array');
-          expect(saved.second.references[0]).to.be.a('string');
+          expect(saved.second.references[0].constructor.name).to.be('ObjectID');
 
           done();
         });
